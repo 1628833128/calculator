@@ -9,7 +9,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: #E6F7FF; /* blue-1 全局背景 */
+  background: linear-gradient(180deg, #F0F5FF 0%, #E6F7FF 100%); /* 浅灰蓝渐变背景层 */
   display: flex; justify-content: center; align-items: center;
   min-height: 100vh; padding: 20px;
   color: #0047BA; /* blue-8 主文字 */
@@ -17,126 +17,399 @@ body {
 
 /* ==================== 计算器外框卡片 ==================== */
 .calculator-wrapper {
-  background: #BAE7FF; /* blue-2 */
+  background: linear-gradient(160deg, #FFFFFF 0%, #F0F5FF 100%); /* 外壳层：白→浅灰蓝 */
   border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 6px 24px rgba(24,144,255,0.15);
+  padding: 32px 36px;
+  box-shadow: 0 8px 32px rgba(24,144,255,0.12), 0 2px 8px rgba(0,29,102,0.06);
+  border: 1px solid #BAE7FF; /* blue-2 微描边 */
   width: 100%; max-width: 780px;
 }
+/* ==================== 页面标题 ==================== */
 .calc-title {
-  text-align: center; font-size: 22px; font-weight: 700;
-  color: #001D66; /* blue-10 */ margin-bottom: 16px; letter-spacing: 2px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  margin-bottom: 26px;
+  padding: 10px 0 8px;
+  /* 蓝色渐变文字 */
+  background: linear-gradient(180deg, #001D66 0%, #0047BA 50%, #1890FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* 细微发光阴影 */
+  filter: drop-shadow(0 1px 2px rgba(24,144,255,0.15));
+  position: relative;
+}
+/* 标题下方装饰线 */
+.calc-title::after {
+  content: '';
+  display: block;
+  width: 60%;
+  margin: 8px auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #91CAFF 20%, #1890FF 50%, #91CAFF 80%, transparent 100%);
+  opacity: 0.4;
+  border-radius: 1px;
 }
 
 /* ==================== 计算显示屏 ==================== */
 .display-container {
-  background: #141414; border-radius: 14px; padding: 20px 24px;
-  margin-bottom: 18px; border: 2px solid #69b1ff; /* blue-5 描边 */
+  background: linear-gradient(160deg, #1c1f2e 0%, #141620 50%, #111318 100%); /* 哑光深色面板 */
+  border-radius: 14px; padding: 24px 28px;
+  margin-bottom: 24px;
+  border: 1.5px solid transparent; /* 渐变边框占位 */
+  background-clip: padding-box; /* 让 border 渐变不被 padding-box 裁切 */
   min-height: 100px; display: flex; flex-direction: column; justify-content: flex-end;
+  /* 内凹立体效果：多层内阴影模拟凹陷深度 */
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,0.5),     /* 顶部深凹 */
+    inset 0 -1px 4px rgba(0,0,0,0.3),     /* 底部微反光 */
+    inset 2px 0 6px rgba(0,0,0,0.25),     /* 左侧凹影 */
+    inset -2px 0 6px rgba(0,0,0,0.25),    /* 右侧凹影 */
+    inset 0 0 20px rgba(0,0,0,0.15);      /* 全局柔暗 */
+  /* 屏幕外发光 */
+  position: relative;
+}
+/* 渐变边框高光（伪元素实现） */
+.display-container::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 15px;
+  background: linear-gradient(160deg, rgba(105,177,255,0.5) 0%, rgba(64,169,255,0.15) 40%, rgba(24,144,255,0.08) 60%, rgba(105,177,255,0.3) 100%);
+  z-index: -1;
+}
+/* 柔光外发光层 */
+.display-container::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 18px;
+  background: transparent;
+  box-shadow: 0 0 18px rgba(24,144,255,0.08), 0 0 40px rgba(24,144,255,0.04);
+  z-index: -2;
+  pointer-events: none;
 }
 .display-history {
-  font-size: 15px; color: #91CAFF; /* blue-4 */ text-align: right;
+  font-size: 15px; color: rgba(145,202,255,0.65); /* 降低对比度作历史行 */
+  text-align: right;
   min-height: 22px; overflow-x: auto; white-space: nowrap;
   scrollbar-width: none;
 }
 .display-history::-webkit-scrollbar { display: none; }
 .display-result {
-  font-size: 36px; font-weight: 700; color: #1890FF; /* 主色 */
+  font-size: 36px; font-weight: 700; color: #d0ebff; /* 柔和亮蓝白 */
   text-align: right; overflow-x: auto; white-space: nowrap;
-  scrollbar-width: none; margin-top: 8px;
+  scrollbar-width: none; margin-top: 12px;
+  /* 数字柔和阴影 */
+  text-shadow: 0 0 8px rgba(24,144,255,0.25), 0 1px 2px rgba(0,0,0,0.4);
 }
 .display-result::-webkit-scrollbar { display: none; }
 
 /* ==================== 按键网格 ==================== */
-.buttons-area { display: flex; gap: 14px; }
-.btn-section-basic { flex: 1; }
-.btn-section-sci { width: 260px; }
+.buttons-area { display: flex; gap: 22px; }
+.btn-section-basic {
+  flex: 1;
+  background: rgba(255,255,255,0.45);
+  border-radius: 14px;
+  padding: 14px 14px 10px;
+  border: 1px solid rgba(186,231,255,0.5);
+}
+.btn-section-sci {
+  width: 230px;
+  background: rgba(255,255,255,0.45);
+  border-radius: 14px;
+  padding: 14px 10px 10px;
+  border: 1px solid rgba(186,231,255,0.5);
+}
 .section-label {
-  font-size: 12px; color: #40A9FF; /* blue-6 */ margin-bottom: 6px;
+  font-size: 12px; color: #40A9FF; /* blue-6 */ margin-bottom: 10px;
   text-align: center; font-weight: 600;
 }
 .btn-grid {
-  display: grid; gap: 8px;
+  display: grid; gap: 10px;
 }
 .btn-grid-basic {
   grid-template-columns: repeat(4, 1fr);
 }
 .btn-grid-sci {
   grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
 }
+/* ==================== 交互动效 ==================== */
+/* 按键通用过渡 */
 .btn {
   border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
-  cursor: pointer; transition: all 0.2s ease; outline: none;
+  cursor: pointer; outline: none;
   user-select: none; -webkit-user-select: none;
   height: 48px; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  /* 塑料实体基底：外凸起 + 顶部高光 + 底部投影 */
+  box-shadow:
+    0 3px 6px rgba(0,0,0,0.10),
+    0 1px 2px rgba(255,255,255,0.15) inset,
+    0 -1px 2px rgba(0,0,0,0.08) inset;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease, filter 0.18s ease;
 }
-.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-.btn:active { transform: translateY(1px); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-
-/* 数字按键 */
-.btn-num {
-  background: #91CAFF; /* blue-3 */ color: #001D66; /* blue-10 */
-}
-.btn-num:hover { background: #69b1ff; /* blue-5 */ }
-.btn-num:active { background: #1890ff; /* blue-7 实际是蓝7 */ }
-
-/* 基础四则运算 */
-.btn-op {
-  background: #1890FF; color: #fff;
-}
-.btn-op:hover { background: #0047BA; /* blue-8 */ }
-.btn-op:active { background: #00358E; /* blue-9 */ }
+/* 重点功能键（AC、等号）反馈更强 */
+.btn-ac,
 .btn-equals {
-  background: #1890FF; color: #fff; font-size: 20px; height: 48px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
-.btn-equals:hover { background: #0047BA; }
-.btn-equals:active { background: #00358E; }
 
-/* AC 清空键 - 橙色区分 */
+/* 数字按键 hover 亮度提升 */
+.btn-num:hover {
+  filter: brightness(1.08);
+}
+.btn-num:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.12),
+    0 3px 6px rgba(0,0,0,0.15) inset,
+    0 1px 2px rgba(255,255,255,0.10) inset;
+}
+
+/* 运算符键 hover 亮度提升 */
+.btn-op:hover {
+  filter: brightness(1.12);
+}
+.btn-op:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.12),
+    0 3px 6px rgba(0,0,0,0.18) inset;
+}
+
+/* AC 键 — 最强按压反馈 */
+.btn-ac:hover {
+  filter: brightness(1.15);
+}
+.btn-ac:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.12),
+    0 4px 8px rgba(0,0,0,0.20) inset;
+}
+
+/* 等号键 — 强按压反馈 */
+.btn-equals:hover {
+  filter: brightness(1.15);
+}
+.btn-equals:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.12),
+    0 4px 8px rgba(0,0,0,0.20) inset;
+}
+
+/* 科学键 hover 亮度提升 */
+.btn-sci:hover {
+  filter: brightness(1.10);
+}
+.btn-sci:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.12),
+    0 3px 5px rgba(0,0,0,0.15) inset;
+}
+
+/* 正负切换键 */
+.btn-toggle:hover {
+  filter: brightness(1.08);
+}
+.btn-toggle:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.12),
+    0 3px 6px rgba(0,0,0,0.15) inset;
+}
+
+/* 模式键 hover */
+.btn-mode:hover {
+  filter: brightness(1.12);
+}
+.btn-mode:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.12),
+    0 3px 5px rgba(0,0,0,0.18) inset;
+}
+
+/* 公式面板按钮过渡 */
+.formula-btn {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, filter 0.18s ease;
+}
+.formula-btn:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+.formula-btn:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15) inset;
+}
+
+/* 公式标签 hover */
+.formula-tag {
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.formula-tag:hover {
+  background: #BAE7FF;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(24,144,255,0.12);
+}
+.formula-tag:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* 分区标签 hover */
+.section-label {
+  transition: color 0.2s ease;
+}
+.section-label:hover {
+  color: #1890FF;
+}
+
+/* 折叠开关 hover */
+.sci-collapse-toggle {
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.sci-collapse-toggle:hover {
+  background: rgba(64,169,255,0.06);
+  border-radius: 6px;
+}
+
+/* 显示屏数字淡入动画 */
+@keyframes displayFadeIn {
+  0% { opacity: 0.3; transform: translateY(2px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.display-animate {
+  animation: displayFadeIn 0.18s ease-out;
+}
+
+/* 弹窗淡入 */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.modal-box {
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+/* 公式面板顶部装饰线呼吸效果 */
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+.formula-panel::before {
+  animation: borderGlow 4s ease-in-out infinite;
+}
+
+/* 数字按键 — 浅蓝渐变 + 细腻高光 */
+.btn-num {
+  background: linear-gradient(180deg, #a8dcff 0%, #91CAFF 50%, #7ec4ff 100%);
+  color: #001D66;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.btn-num:hover {
+  background: linear-gradient(180deg, #b8e4ff 0%, #a0d4ff 50%, #8ed0ff 100%);
+}
+
+/* 基础四则运算 — 深蓝渐变 + 强对比高光 */
+.btn-op {
+  background: linear-gradient(180deg, #3aa0ff 0%, #1890FF 50%, #0a7fd6 100%);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.btn-op:hover {
+  background: linear-gradient(180deg, #5ab8ff 0%, #3aa0ff 50%, #1a8ae0 100%);
+}
+
+/* 等号键 — 与运算键同色系但更深 */
+.btn-equals {
+  background: linear-gradient(180deg, #2e90f0 0%, #0d6ce8 50%, #0050b3 100%);
+  color: #fff; font-size: 20px; height: 48px;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+.btn-equals:hover {
+  background: linear-gradient(180deg, #4aa0ff 0%, #2e80f0 50%, #0a6cd8 100%);
+}
+
+/* AC 清空键 — 暖橙渐变 */
 .btn-ac {
-  background: #fa8c16; color: #fff;
+  background: linear-gradient(180deg, #ffb366 0%, #fa8c16 50%, #e0700a 100%);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.20);
 }
-.btn-ac:hover { background: #fa6d1b; }
-.btn-ac:active { background: #fa4e27; }
+.btn-ac:hover {
+  background: linear-gradient(180deg, #ffc88a 0%, #ffb040 50%, #f08a20 100%);
+}
 
-/* 科学运算按键 */
+/* 科学运算按键 — 中蓝渐变 + 微高光（缩小尺寸适配3列网格） */
 .btn-sci {
-  background: #40A9FF; /* blue-6 */ color: #fff; font-size: 13px;
+  background: linear-gradient(180deg, #69c0ff 0%, #40A9FF 50%, #2e9ce0 100%);
+  color: #fff; font-size: 12px; height: 32px;
+  border: 1px solid rgba(255,255,255,0.18);
 }
-.btn-sci:hover { background: #2f9ce0; /* blue-7 */ }
-.btn-sci:active { background: #1890ff; /* blue-8 */ }
+.btn-sci:hover {
+  background: linear-gradient(180deg, #82ccff 0%, #5ab8ff 50%, #3aa0f0 100%);
+}
 
-/* 正负切换 */
+/* 正负切换 — 与数字键同色系 */
 .btn-toggle {
-  background: #91CAFF; color: #001D66;
+  background: linear-gradient(180deg, #a8dcff 0%, #91CAFF 50%, #7ec4ff 100%);
+  color: #001D66;
+  border: 1px solid rgba(255,255,255,0.25);
 }
-.btn-toggle:hover { background: #69b1ff; }
-.btn-toggle:active { background: #1890ff; }
+.btn-toggle:hover {
+  background: linear-gradient(180deg, #b8e4ff 0%, #a0d4ff 50%, #8ed0ff 100%);
+}
 
-/* 进制标签 */
+/* 进制标签 — 深蓝渐变（缩小适配右侧紧凑布局） */
 .btn-mode {
-  background: #0047BA; color: #fff; font-size: 12px; height: 34px; border-radius: 8px;
+  background: linear-gradient(180deg, #1a6ee0 0%, #0047BA 50%, #00358e 100%);
+  color: #fff; font-size: 11px; height: 30px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.10);
 }
-.btn-mode.active { background: #1890FF; }
+.btn-mode:hover {
+  background: linear-gradient(180deg, #2e80f0 0%, #1a6ee0 50%, #0a5cb8 100%);
+}
+.btn-mode.active {
+  background: linear-gradient(180deg, #5ab8ff 0%, #1890FF 50%, #0a7fd6 100%);
+}
 
 /* ==================== 底部公式面板 ==================== */
 .formula-panel {
-  margin-top: 18px; background: #fff; border-radius: 14px;
-  padding: 16px 20px; border: 1px solid #91CAFF; /* blue-4 */
+  margin-top: 24px;
+  background: linear-gradient(160deg, #FFFFFF 0%, #F0F8FF 100%);
+  border-radius: 14px;
+  padding: 20px 28px;
+  border: 1px solid #BAE7FF;
+  box-shadow: 0 2px 10px rgba(24,144,255,0.06), 0 0 0 1px rgba(186,231,255,0.15);
+  position: relative;
+}
+/* 公式面板顶部装饰线 */
+.formula-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 28px; right: 28px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: linear-gradient(90deg, transparent 0%, #91CAFF 15%, #1890FF 50%, #91CAFF 85%, transparent 100%);
+  opacity: 0.5;
 }
 .formula-header {
   display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 .formula-header-title {
   font-size: 14px; font-weight: 700; color: #001D66;
 }
 .formula-edit-row {
-  display: flex; gap: 8px; margin-bottom: 10px; align-items: center;
+  display: flex; gap: 10px; margin-bottom: 14px; align-items: center;
 }
 .formula-input {
-  flex: 1; padding: 8px 14px; border-radius: 8px; border: 1px solid #91CAFF;
+  flex: 1; padding: 10px 16px; border-radius: 8px; border: 1px solid #91CAFF;
   background: #E6F7FF; /* blue-1 */ font-size: 14px; outline: none;
   color: #0047BA; transition: border-color 0.2s;
 }
@@ -144,27 +417,39 @@ body {
 .formula-input.error { border-color: #f5222d; }
 .formula-input::placeholder { color: #40A9FF; }
 .formula-btn {
-  padding: 8px 16px; border-radius: 8px; border: none; font-size: 13px;
+  padding: 9px 18px; border-radius: 8px; font-size: 13px;
   font-weight: 600; cursor: pointer; transition: all 0.2s; color: #fff;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.10), 0 1px 1px rgba(255,255,255,0.15) inset;
+  border: 1px solid rgba(255,255,255,0.12);
+  min-width: 72px; text-align: center;
 }
-.formula-btn-save { background: #0047BA; }
-.formula-btn-save:hover { background: #00358e; }
-.formula-btn-clear { background: #f5222d; }
-.formula-btn-clear:hover { background: #cf1322; }
-.formula-btn-export { background: #40A9FF; }
-.formula-btn-export:hover { background: #1890FF; }
-.formula-btn-del { background: #ff4d4f; padding: 3px 8px; font-size: 11px; border-radius: 6px; }
-.formula-btn-del:hover { background: #cf1322; }
+.formula-btn-save {
+  background: linear-gradient(180deg, #1a6ee0 0%, #0047BA 50%, #00358e 100%);
+}
+.formula-btn-save:hover { background: linear-gradient(180deg, #2e80f0 0%, #00358e 50%, #002870 100%); }
+.formula-btn-clear {
+  background: linear-gradient(180deg, #ff7a7a 0%, #f5222d 50%, #d41c26 100%);
+}
+.formula-btn-clear:hover { background: linear-gradient(180deg, #ff5555 0%, #d41c26 50%, #b01520 100%); }
+.formula-btn-export {
+  background: linear-gradient(180deg, #69c0ff 0%, #40A9FF 50%, #2e9ce0 100%);
+}
+.formula-btn-export:hover { background: linear-gradient(180deg, #82ccff 0%, #2e9ce0 50%, #1a8ad4 100%); }
+.formula-btn-del {
+  background: linear-gradient(180deg, #ff7a7a 0%, #ff4d4f 50%, #e04042 100%);
+  padding: 3px 8px; font-size: 11px; border-radius: 6px;
+}
+.formula-btn-del:hover { background: linear-gradient(180deg, #ff5555 0%, #e04042 50%, #c03032 100%); }
 .formula-error {
-  font-size: 12px; color: #f5222d; min-height: 18px; margin-bottom: 6px;
+  font-size: 12px; color: #f5222d; min-height: 18px; margin-bottom: 10px;
 }
 .formula-list {
-  display: flex; flex-wrap: wrap; gap: 6px;
+  display: flex; flex-wrap: wrap; gap: 8px;
 }
 .formula-tag {
   background: #E6F7FF; /* blue-2 */ border: 1px solid #91CAFF;
-  border-radius: 8px; padding: 5px 12px; font-size: 13px;
+  border-radius: 8px; padding: 6px 14px; font-size: 13px;
   color: #0047BA; cursor: pointer; transition: all 0.2s;
   display: flex; align-items: center; gap: 6px;
 }
@@ -179,7 +464,7 @@ body {
 }
 .modal-overlay.hidden { display: none; }
 .modal-box {
-  background: #fff; border-radius: 16px; padding: 28px 32px;
+  background: #fff; border-radius: 16px; padding: 32px 36px;
   min-width: 340px; max-width: 90vw; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
 }
 .modal-title {
@@ -187,30 +472,44 @@ body {
 }
 .modal-body { margin-bottom: 20px; }
 .modal-body label {
-  display: block; font-size: 13px; color: #0047BA; margin-bottom: 4px;
-  margin-top: 10px; font-weight: 600;
+  display: block; font-size: 13px; color: #0047BA; margin-bottom: 5px;
+  margin-top: 12px; font-weight: 600;
 }
 .modal-body input {
-  width: 100%; padding: 8px 12px; border-radius: 8px;
+  width: 100%; padding: 10px 14px; border-radius: 8px;
   border: 1px solid #91CAFF; background: #E6F7FF;
   font-size: 14px; outline: none; color: #0047BA;
 }
 .modal-body input:focus { border-color: #1890FF; }
-.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
 .modal-btn {
-  padding: 8px 22px; border-radius: 8px; border: none;
-  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, filter 0.18s ease;
+  padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.10), 0 1px 1px rgba(255,255,255,0.15) inset;
+  border: 1px solid rgba(255,255,255,0.12);
 }
-.modal-btn-confirm { background: #1890FF; color: #fff; }
-.modal-btn-confirm:hover { background: #0047BA; }
-.modal-btn-cancel { background: #91CAFF; color: #001D66; }
-.modal-btn-cancel:hover { background: #69b1ff; }
+.modal-btn:hover {
+  filter: brightness(1.10);
+  transform: translateY(-1px);
+}
+.modal-btn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15) inset;
+}
+.modal-btn-confirm {
+  background: linear-gradient(180deg, #3aa0ff 0%, #1890FF 50%, #0a7fd6 100%);
+  color: #fff;
+}
+.modal-btn-cancel {
+  background: linear-gradient(180deg, #a8dcff 0%, #91CAFF 50%, #7ec4ff 100%);
+  color: #001D66;
+}
 
 /* ==================== 折叠开关 ==================== */
 .sci-collapse-toggle {
-  display: flex; align-items: center; justify-content: center; gap: 4px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
   width: 100%; cursor: pointer; border: none; background: transparent;
-  color: #40A9FF; font-size: 12px; font-weight: 600; padding: 4px 0;
+  color: #40A9FF; font-size: 11px; font-weight: 600; padding: 2px 0;
   transition: color 0.2s;
 }
 .sci-collapse-toggle:hover { color: #1890FF; }
@@ -230,18 +529,18 @@ body {
 
 /* ==================== 进制转换面板 ==================== */
 .base-panel {
-  margin-top: 10px; background: #E6F7FF; border-radius: 10px;
-  padding: 10px 14px; display: none;
+  margin-top: 12px; background: #E6F7FF; border-radius: 10px;
+  padding: 12px 16px; display: none;
 }
 .base-panel.show { display: block; }
 .base-row {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
   font-size: 12px; color: #0047BA;
 }
 .base-row:last-child { margin-bottom: 0; }
 .base-label { min-width: 56px; font-weight: 600; }
 .base-value {
-  flex: 1; background: #fff; border-radius: 6px; padding: 4px 8px;
+  flex: 1; background: #fff; border-radius: 6px; padding: 6px 10px;
   font-family: "Courier New", monospace; font-size: 12px; color: #1890FF;
   border: 1px solid #91CAFF; overflow-x: auto; white-space: nowrap;
 }
@@ -252,7 +551,7 @@ body {
   .btn-section-sci { width: 100%; }
   .btn-grid-sci { grid-template-columns: repeat(5, 1fr); }
   .btn { height: 42px; font-size: 14px; }
-  .btn-sci { font-size: 11px; }
+  .btn-sci { font-size: 10px; height: 28px; }
 }
 </style>
 </head>
@@ -298,7 +597,7 @@ body {
         <button class="btn btn-num" onclick="inputDot()">.</button>
         <button class="btn btn-op" onclick="backspace()">⌫</button>
       </div>
-      <div style="margin-top:8px;display:flex;gap:8px;">
+      <div style="margin-top:12px;display:flex;gap:10px;">
         <button class="btn btn-op btn-equals" onclick="calculate()" style="flex:1;height:44px;font-size:20px;">=</button>
         <button class="btn btn-op" onclick="inputParen('(')" style="width:auto;padding:0 14px;">(</button>
         <button class="btn btn-op" onclick="inputParen(')')" style="width:auto;padding:0 14px;">)</button>
@@ -311,7 +610,7 @@ body {
         <span class="arrow" id="sciArrow">▼</span> 高阶运算
       </button>
       <div class="sci-collapsible" id="sciPanel" style="max-height:600px;">
-        <div style="display:flex;gap:4px;margin-bottom:6px;">
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
           <button class="btn btn-mode" id="degRadBtn" onclick="toggleDegRad()">DEG</button>
           <button class="btn btn-mode" id="baseToggleBtn" onclick="toggleBasePanel()">进制</button>
         </div>
@@ -372,7 +671,7 @@ body {
   <div class="formula-panel">
     <div class="formula-header">
       <span class="formula-header-title">📐 自定义公式</span>
-      <div style="display:flex;gap:6px;">
+      <div style="display:flex;gap:8px;">
         <button class="formula-btn formula-btn-export" onclick="exportFormulas()">导出</button>
         <button class="formula-btn formula-btn-clear" onclick="clearAllFormulas()">清空全部</button>
       </div>
@@ -460,18 +759,26 @@ function toggleSciPanel() {
    显示屏更新
    ================================================================ */
 function updateDisplay() {
-  document.getElementById('displayHistory').textContent = displayExpr;
+  const histEl = document.getElementById('displayHistory');
+  histEl.textContent = displayExpr;
   const resultEl = document.getElementById('displayResult');
+  let newText;
   if (expression === '' && lastResult === '') {
-    resultEl.textContent = '0';
+    newText = '0';
   } else if (lastResult !== '') {
-    resultEl.textContent = lastResult;
+    newText = lastResult;
   } else {
-    resultEl.textContent = displayExpr || '0';
+    newText = displayExpr || '0';
   }
+  if (resultEl.textContent !== newText) {
+    resultEl.classList.remove('display-animate');
+    // Force reflow to restart animation
+    void resultEl.offsetWidth;
+    resultEl.classList.add('display-animate');
+  }
+  resultEl.textContent = newText;
   resultEl.scrollLeft = resultEl.scrollWidth;
-  document.getElementById('displayHistory').scrollLeft =
-    document.getElementById('displayHistory').scrollWidth;
+  histEl.scrollLeft = histEl.scrollWidth;
 }
 
 function refreshDisplay() {
@@ -1001,10 +1308,10 @@ function formatNumber(n) {
    错误提示
    ================================================================ */
 function showError(msg) {
-  document.getElementById('displayResult').style.color = '#f5222d';
+  document.getElementById('displayResult').style.color = '#ff8a80';
   document.getElementById('displayResult').textContent = msg;
   setTimeout(() => {
-    document.getElementById('displayResult').style.color = '#1890FF';
+    document.getElementById('displayResult').style.color = '#d0ebff';
     refreshDisplay();
   }, 2500);
 }

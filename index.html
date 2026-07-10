@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>科学计算器</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-container">
+  <div class="header">
+    <h1>科学计算器</h1>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'calculator')">计算器</button>
+    <button class="tab-btn" onclick="switchTab(this,'formula')">公式</button>
+    <button class="tab-btn" onclick="switchTab(this,'plot')">图像</button>
+    <button class="tab-btn" onclick="switchTab(this,'history')">历史</button>
+  </div>
+  <div id="tab-calculator" class="tab-content active">
+    <div class="glass-card" style="position:relative">
+      <button class="angle-toggle" id="angleToggle" onclick="toggleAngle()">RAD</button>
+      <div class="calc-display">
+        <div class="expr-line" id="exprLine"></div>
+        <div class="result-line" id="resultLine">0</div>
+      </div>
+      <div class="calc-grid">
+        <button class="calc-btn function" onclick="insertFunc(`sin(`)">sin</button>
+        <button class="calc-btn function" onclick="insertFunc(`cos(`)">cos</button>
+        <button class="calc-btn function" onclick="insertFunc(`tan(`)">tan</button>
+        <button class="calc-btn function" onclick="insertFunc(`ln(`)">ln</button>
+        <button class="calc-btn function" onclick="insertFunc(`log(`)">log</button>
+        <button class="calc-btn function" onclick="insertFunc(`sqrt(`)">√</button>
+        <button class="calc-btn function" onclick="insertFunc(`^2`)">x²</button>
+        <button class="calc-btn function" onclick="insertFunc(`^3`)">x³</button>
+        <button class="calc-btn function" onclick="insertFunc(`^`)">xʸ</button>
+        <button class="calc-btn function" onclick="insertFunc(`pi`)">π</button>
+        <button class="calc-btn clear" onclick="clearAll()">AC</button>
+        <button class="calc-btn clear" onclick="deleteLast()">⌫</button>
+        <button class="calc-btn operator" onclick="insertOp(`(`)">(</button>
+        <button class="calc-btn operator" onclick="insertOp(`)`)">)</button>
+        <button class="calc-btn operator" onclick="insertOp(`/`)">÷</button>
+        <button class="calc-btn" onclick="insertNum(`7`)">7</button>
+        <button class="calc-btn" onclick="insertNum(`8`)">8</button>
+        <button class="calc-btn" onclick="insertNum(`9`)">9</button>
+        <button class="calc-btn operator" onclick="insertOp(`*`)">×</button>
+        <button class="calc-btn operator" onclick="insertOp(`-`)">−</button>
+        <button class="calc-btn" onclick="insertNum(`4`)">4</button>
+        <button class="calc-btn" onclick="insertNum(`5`)">5</button>
+        <button class="calc-btn" onclick="insertNum(`6`)">6</button>
+        <button class="calc-btn operator" onclick="insertOp(`+`)">+</button>
+        <button class="calc-btn function" onclick="insertFunc(`e`)">e</button>
+        <button class="calc-btn" onclick="insertNum(`1`)">1</button>
+        <button class="calc-btn" onclick="insertNum(`2`)">2</button>
+        <button class="calc-btn" onclick="insertNum(`3`)">3</button>
+        <button class="calc-btn equals" onclick="calculate()">=</button>
+        <button class="calc-btn function" onclick="insertFunc(`fact(`)">n!</button>
+        <button class="calc-btn" onclick="insertNum(`0`)" style="grid-column:span 2">0</button>
+        <button class="calc-btn" onclick="insertNum(`.`)">.</button>
+        <button class="calc-btn operator" onclick="insertOp(`%`)">%</button>
+      </div>
+    </div>
+  </div>
+  <div id="tab-formula" class="tab-content">
+    <div class="formula-section">
+      <div class="glass-card">
+        <h3 style="font-weight:400;margin-bottom:15px;color:var(--text-dim)">自定义公式编辑器</h3>
+        <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:15px">输入数学表达式（如 a*x^2+b*x+c），系统将自动识别变量</p>
+        <div class="formula-input-group">
+          <input type="text" class="formula-input" id="formulaInput" placeholder="输入公式表达式，例如: a*x^2 + b*x + c" oninput="parseFormula()">
+        </div>
+        <div id="variablesPanel" class="variables-panel" style="display:none">
+          <h4 style="font-size:0.95rem;color:var(--text-dim);margin-bottom:10px">识别到的变量（点击可快速填入）</h4>
+          <div class="variable-list" id="variableTags"></div>
+          <div class="variable-inputs" id="variableInputs"></div>
+          <div style="display:flex;gap:10px;margin-top:15px">
+            <button class="btn btn-primary" onclick="calculateFormula()">一键计算</button>
+            <button class="btn" onclick="saveFormula()">保存公式</button>
+            <button class="btn btn-danger" onclick="resetFormula()">重置</button>
+          </div>
+        </div>
+        <div id="formulaResult" style="display:none">
+          <div class="result-display">
+            <div class="result-title">计算结果</div>
+            <div class="result-value" id="resultValue"></div>
+            <div class="result-process" id="resultProcess"></div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card saved-formulas">
+        <h3>已保存的公式</h3>
+        <div id="savedFormulasList">
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-text">暂无保存的公式</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="tab-plot" class="tab-content">
+    <div class="plot-section">
+      <div class="glass-card">
+        <h3 style="font-weight:400;margin-bottom:15px;color:var(--text-dim)">函数图像绘制</h3>
+        <div class="plot-controls">
+          <div class="plot-input-group" style="flex:2">
+            <label>函数表达式 y = f(x)</label>
+            <input type="text" id="plotFunctionInput" placeholder="例如: sin(x), x^2, ln(x)">
+          </div>
+          <button class="btn btn-primary" onclick="addFunction()">添加函数</button>
+        </div>
+        <div class="range-inputs">
+          <div class="range-input-group">
+            <label>X 最小值</label>
+            <input type="number" id="xMin" value="-10" onchange="redrawPlot()">
+          </div>
+          <div class="range-input-group">
+            <label>X 最大值</label>
+            <input type="number" id="xMax" value="10" onchange="redrawPlot()">
+          </div>
+          <div class="range-input-group">
+            <label>采样点数</label>
+            <input type="number" id="samplePoints" value="500" onchange="redrawPlot()">
+          </div>
+        </div>
+        <div class="functions-list" id="functionsList"></div>
+      </div>
+      <div class="plot-canvas-container">
+        <canvas id="plotCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+  <div id="tab-history" class="tab-content">
+    <div class="history-section">
+      <div class="glass-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <h3 style="font-weight:400;color:var(--text-dim)">计算历史</h3>
+          <button class="btn btn-danger" onclick="clearHistory()">清空历史</button>
+        </div>
+        <div id="historyList">
+          <div class="empty-state">
+            <div class="empty-state-icon">📜</div>
+            <div class="empty-state-text">暂无历史记录</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

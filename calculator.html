@@ -7,6 +7,11 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="bg" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
 <div class="app-container">
   <div class="header">
     <h1>科学计算器</h1>
@@ -18,7 +23,7 @@
     <button class="tab-btn" onclick="switchTab(this,'history')">历史</button>
   </div>
   <div id="tab-calculator" class="tab-content active">
-    <div class="glass-card" style="position:relative">
+    <div class="glass-card calc-panel">
       <button class="angle-toggle" id="angleToggle" onclick="toggleAngle()">RAD</button>
       <div class="calc-display">
         <div class="expr-line" id="exprLine"></div>
@@ -55,7 +60,7 @@
         <button class="calc-btn" onclick="insertNum(`3`)">3</button>
         <button class="calc-btn equals" onclick="calculate()">=</button>
         <button class="calc-btn function" onclick="insertFunc(`fact(`)">n!</button>
-        <button class="calc-btn" onclick="insertNum(`0`)" style="grid-column:span 2">0</button>
+        <button class="calc-btn zero" onclick="insertNum(`0`)">0</button>
         <button class="calc-btn" onclick="insertNum(`.`)">.</button>
         <button class="calc-btn operator" onclick="insertOp(`%`)">%</button>
       </div>
@@ -66,6 +71,13 @@
       <div class="glass-card">
         <h3 style="font-weight:400;margin-bottom:15px;color:var(--text-dim)">自定义公式编辑器</h3>
         <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:15px">输入数学表达式（如 a*x^2+b*x+c），系统将自动识别变量</p>
+        <div class="preset-block">
+          <div class="preset-head">
+            <h3>预设公式</h3>
+            <span class="preset-hint">点击即可填入并演示计算</span>
+          </div>
+          <div class="preset-list" id="presetList"></div>
+        </div>
         <div class="formula-input-group">
           <input type="text" class="formula-input" id="formulaInput" placeholder="输入公式表达式，例如: a*x^2 + b*x + c" oninput="parseFormula()">
         </div>

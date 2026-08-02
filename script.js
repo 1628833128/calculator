@@ -102,6 +102,40 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Backspace') deleteLast();
 });
 
+const PRESETS = [
+  {
+    id: 'heron',
+    icon: '△',
+    name: '海伦公式',
+    desc: '已知三角形三边 a、b、c，求面积',
+    expression: 'sqrt((a+b+c)/2*((a+b+c)/2-a)*((a+b+c)/2-b)*((a+b+c)/2-c))',
+    values: { a: '3', b: '4', c: '5' }
+  }
+];
+
+function renderPresets() {
+  const el = document.getElementById('presetList');
+  if (!el) return;
+  el.innerHTML = PRESETS.map(p =>
+    '<button class="preset-chip" onclick="loadPreset(\'' + p.id + '\')">' +
+      '<span class="preset-icon">' + p.icon + '</span>' +
+      '<span class="preset-text"><span class="preset-name">' + p.name + '</span><span class="preset-desc">' + p.desc + '</span></span>' +
+    '</button>'
+  ).join('');
+}
+
+function loadPreset(id) {
+  const p = PRESETS.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('formulaInput').value = p.expression;
+  parseFormula();
+  Object.entries(p.values).forEach(([v, val]) => {
+    const inp = document.getElementById('var_' + v);
+    if (inp) inp.value = val;
+  });
+  calculateFormula();
+  showToast('已载入预设：' + p.name);
+}
 let parsedVars = [];
 
 function parseFormula() {
@@ -141,7 +175,7 @@ function calculateFormula() {
   }
   let p = expr;
   for (const [v, val] of Object.entries(vals)) {
-    p = p.replace(new RegExp('\\\\b' + v + '\\\\b', 'g'), '(' + val + ')');
+    p = p.replace(new RegExp('\\b' + v + '\\b', 'g'), '(' + val + ')');
   }
   try {
     const r = safeEval(p);
@@ -392,6 +426,7 @@ function copyText(text) {
 window.addEventListener('load', () => {
   renderSavedFormulas();
   renderHistory();
+  renderPresets();
   setTimeout(() => {
     const canvas = document.getElementById('plotCanvas');
     if (canvas) {

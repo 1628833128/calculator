@@ -110,39 +110,34 @@
       </div>
     </div>
   </div>
-  <div id="tab-plot" class="tab-content">
+    <div id="tab-plot" class="tab-content">
     <div class="plot-section">
-      <div class="glass-card">
-        <h3 style="font-weight:400;margin-bottom:15px;color:var(--text-dim)">函数图像绘制</h3>
-        <div class="plot-controls">
-          <div class="plot-input-group" style="flex:2">
-            <label>函数表达式 y = f(x)</label>
-            <input type="text" id="plotFunctionInput" placeholder="例如: sin(x), x^2, ln(x)">
-          </div>
+      <div class="glass-card plot-card">
+        <div class="plot-head">
+          <h3>函数图像</h3>
+          <span class="plot-hint">滚轮缩放 · 拖拽平移 · 点击曲线标注点（再点删除）</span>
+        </div>
+        <div class="plot-toolbar">
+          <input type="text" id="plotFunctionInput" placeholder="例如: 2x、sin(x)、lnx、x^2+1" onkeydown="if(event.key==='Enter')addFunction()">
           <button class="btn btn-primary" onclick="addFunction()">添加函数</button>
         </div>
-        <div class="range-inputs">
-          <div class="range-input-group">
-            <label>X 最小值</label>
-            <input type="number" id="xMin" value="-10" onchange="redrawPlot()">
-          </div>
-          <div class="range-input-group">
-            <label>X 最大值</label>
-            <input type="number" id="xMax" value="10" onchange="redrawPlot()">
-          </div>
-          <div class="range-input-group">
-            <label>采样点数</label>
-            <input type="number" id="samplePoints" value="500" onchange="redrawPlot()">
+        <div class="plot-viewport" id="plotViewport">
+          <canvas id="plotCanvas"></canvas>
+          <div class="plot-crosshair plot-crosshair-x" id="plotCrossX"></div>
+          <div class="plot-crosshair plot-crosshair-y" id="plotCrossY"></div>
+          <div class="plot-readout" id="plotReadout"></div>
+          <div class="plot-zoom-controls">
+            <button class="zoom-btn" onclick="plotZoom(1.35)" title="缩小">−</button>
+            <button class="zoom-btn" onclick="plotZoom(1/1.35)" title="放大">+</button>
+            <button class="zoom-btn" onclick="plotFit()" title="适配视图">⛶</button>
+            <button class="zoom-btn" id="plotFullscreenBtn" onclick="togglePlotFullscreen()" title="全屏">⤢</button>
+            <button class="zoom-btn" onclick="plotReset()" title="重置视图">⌂</button>
           </div>
         </div>
         <div class="functions-list" id="functionsList"></div>
       </div>
-      <div class="plot-canvas-container">
-        <canvas id="plotCanvas"></canvas>
-      </div>
     </div>
-  </div>
-  <div id="tab-history" class="tab-content">
+  </div><div id="tab-history" class="tab-content">
     <div class="history-section">
       <div class="glass-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
